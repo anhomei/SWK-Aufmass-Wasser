@@ -350,7 +350,7 @@ body.pdf-gen .tab-content { border:none !important; padding:4px 0 !important; }
   </tbody></table>
 
   <div class="sig-row">
-    <div><div class="sig-box">Datum, Unterschrift AN</div></div>
+    <div><div class="sig-box"><span class="sig-date-an"></span>, Unterschrift AN</div></div>
     <div><div class="sig-box">Datum, Unterschrift AG</div></div>
   </div>
 </div><!-- /tab-wt -->
@@ -398,7 +398,7 @@ body.pdf-gen .tab-content { border:none !important; padding:4px 0 !important; }
     <tr><td class="td-nr">50013202650</td><td class="td-bez">W M NA-GP Erricht TeilNA</td><td class="td-eh">ST</td><td class="td-mg"><input type="number" step="1" min="0"></td><td><input type="text"></td></tr>
     <tr><td class="td-nr">50013202750</td><td class="td-bez">W M NA-GP Fertigst TeilNA</td><td class="td-eh">ST</td><td class="td-mg"><input type="number" step="1" min="0"></td><td><input type="text"></td></tr>
     <tr><td class="td-nr">50013202850</td><td class="td-bez">W M NA-GP Umbindung</td><td class="td-eh">ST</td><td class="td-mg"><input type="number" step="1" min="0"></td><td><input type="text"></td></tr>
-    <tr><td class="td-nr">50013202860</td><td class="td-bez">W M NA-GP Neuanschluss trennen</td><td class="td-eh">ST</td><td class="td-mg"><input type="number" step="1" min="0"></td><td><input type="text"></td></tr>
+    <tr><td class="td-nr">50013202860</td><td class="td-bez">W M NA-GP Netzanschluss trennen</td><td class="td-eh">ST</td><td class="td-mg"><input type="number" step="1" min="0"></td><td><input type="text"></td></tr>
   </tbody></table>
 
   <div class="sec-hdr sec-dark">Wiederverbinden der Inneninstallation Tiefbau</div>
@@ -457,7 +457,7 @@ body.pdf-gen .tab-content { border:none !important; padding:4px 0 !important; }
   </tbody></table>
 
   <div class="sig-row">
-    <div><div class="sig-box">Datum, Unterschrift AN</div></div>
+    <div><div class="sig-box"><span class="sig-date-an"></span>, Unterschrift AN</div></div>
     <div><div class="sig-box">Datum, Unterschrift AG</div></div>
   </div>
 </div><!-- /tab-wm -->
@@ -627,6 +627,12 @@ function syncAll() {
 document.addEventListener('input', syncAll);
 
 /* ════════ Tab-Steuerung ════════ */
+// Erstelldatum automatisch in AN-Unterschriftszeile eintragen
+(function() {
+  const today = new Date().toLocaleDateString('de-DE');
+  document.querySelectorAll('.sig-date-an').forEach(el => el.textContent = today);
+})();
+
 function showTab(id, btn) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -967,7 +973,7 @@ function generatePDF() {
       doc.line(M, y, M+CW/2-8, y);
       doc.line(M+CW/2+8, y, M+CW, y);
       doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(90,90,90);
-      doc.text('Datum, Unterschrift AN', M, y+3.5);
+      doc.text(new Date().toLocaleDateString('de-DE') + ', Unterschrift AN', M, y+3.5);
       doc.text('Datum, Unterschrift AG', M+CW/2+8, y+3.5);
     }
 
