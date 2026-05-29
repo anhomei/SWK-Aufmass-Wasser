@@ -279,7 +279,7 @@ body.pdf-gen .tab-content { border:none !important; padding:4px 0 !important; }
       <div class="print-header-item"><label>Ausführungszeitraum</label><span id="ph-wt-zeitraum"></span></div>
       <div class="print-header-item"><label>Fertigstellung</label><span id="ph-wt-fertig"></span></div>
       <div class="print-header-item"><label>Ort</label><span id="ph-wt-ort"></span></div>
-      <div class="print-header-item"><label>Straße / Nr.</label><span id="ph-wt-strasse"></span></div>
+      <div class="print-header-item"><label>Strasse / Nr.</label><span id="ph-wt-strasse"></span></div>
       <div class="print-header-item"><label>Baumaßnahme</label><span id="ph-wt-baum"></span></div>
     </div>
   </div>
@@ -372,7 +372,7 @@ body.pdf-gen .tab-content { border:none !important; padding:4px 0 !important; }
       <div class="print-header-item"><label>Ausführungszeitraum</label><span id="ph-wm-zeitraum"></span></div>
       <div class="print-header-item"><label>Fertigstellung</label><span id="ph-wm-fertig"></span></div>
       <div class="print-header-item"><label>Ort</label><span id="ph-wm-ort"></span></div>
-      <div class="print-header-item"><label>Straße / Nr.</label><span id="ph-wm-strasse"></span></div>
+      <div class="print-header-item"><label>Strasse / Nr.</label><span id="ph-wm-strasse"></span></div>
       <div class="print-header-item"><label>Baumaßnahme</label><span id="ph-wm-baum"></span></div>
     </div>
   </div>
@@ -643,18 +643,21 @@ function showTab(id, btn) {
 function setAufmassMode() {
   const mode = document.getElementById('g-mode').value;
   const tabBtns = document.querySelectorAll('.tab-btn');
-  const wtBtn = tabBtns[0], wmBtn = tabBtns[1];
+  const wtBtn = tabBtns[0], wmBtn = tabBtns[1], oflBtn = tabBtns[2];
   if (mode === 'wt') {
     wmBtn.style.display = 'none';
     wtBtn.style.display = '';
+    oflBtn.style.display = '';
     showTab('wt', wtBtn);
   } else if (mode === 'wm') {
     wtBtn.style.display = 'none';
     wmBtn.style.display = '';
+    oflBtn.style.display = 'none';
     showTab('wm', wmBtn);
   } else {
     wtBtn.style.display = '';
     wmBtn.style.display = '';
+    oflBtn.style.display = '';
   }
 }
 
@@ -895,7 +898,7 @@ function generatePDF() {
       y += 9;
       const info = [
         ['AUFTRAGSNUMMER / -TEXT', G.aufnr,   'AUFÜHRUNGSZEITRAUM', G.zeitraum],
-        ['ORT',                    G.ort,      'STRAße / NR.',        G.strasse],
+        ['ORT',                    G.ort,      'STRASSE / NR.',        G.strasse],
         ['BAUMASSNAHME',           G.baum,     '',                         ''],
       ];
       for (const [l1,v1,l2,v2] of info) {
@@ -1018,8 +1021,8 @@ function generatePDF() {
       sig(y);
     }
 
-    // -- SEITE 3: Oberflaechenzettel (FB KT507 - originalgetreu) ----
-    doc.addPage(); y = M;
+    // -- SEITE 3: Oberflaechenzettel (nur bei W T oder W T + W M) ----
+    if (mode !== 'wm') { doc.addPage(); y = M;
     const ROW = 7, LBL = 55;
 
     function oflSecHdr(text, red) {
@@ -1174,6 +1177,7 @@ function generatePDF() {
     const bemText = document.querySelectorAll('#tab-ofl textarea')?.[1]?.value||'';
     oflTextarea('Bemerkungen:', bemText);
     if (bbRows[1]) { const inp=bbRows[1].querySelectorAll('input'); oflRow2('Baubeauftragter SWK:', inp?.[0]?.value||'', 'Datum / Unterschrift:', inp?.[1]?.value||''); }
+    } // Ende OFL-Block (nur bei mode !== 'wm')
 
     // ── Speichern ────────────────────────────────────────────────
     const fn = (G.aufnr||'Aufmass').replace(/[^a-zA-Z0-9_\-]/g,'_');
