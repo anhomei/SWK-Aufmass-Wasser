@@ -897,7 +897,7 @@ function generatePDF() {
       doc.text('Sparte: Wasser / SWK', PW-M-2, y+4.8, {align:'right'});
       y += 9;
       const info = [
-        ['AUFTRAGSNUMMER / -TEXT', G.aufnr,   'AUFÜHRUNGSZEITRAUM', G.zeitraum],
+        ['AUFTRAGSNUMMER / -TEXT', G.aufnr,   'AUSFUEHRUNGSZEITRAUM', G.zeitraum],
         ['ORT',                    G.ort,      'STRASSE / NR.',        G.strasse],
         ['BAUMASSNAHME',           G.baum,     '',                         ''],
       ];
@@ -922,21 +922,25 @@ function generatePDF() {
         if (!mgInp) return;
         const mg = parseFloat(mgInp.value||'0');
         if (mg === 0) return;
-        const fmt = v => v%1===0 ? String(v) : v.toFixed(2).replace('.',',');
+        const fmt = (v, eh) => {
+          if (eh && eh.trim().toUpperCase() === 'M') return v.toFixed(2).replace('.',',');
+          return v%1===0 ? String(v) : v.toFixed(2).replace('.',',');
+        };
         if (tr.querySelector('.s-search')) {
           const nr  = tr.querySelector('.s-search')?.value||'';
           const bez = tr.querySelector('.td-bez input')?.value||'';
           const eh  = tr.querySelector('select')?.value||'';
           const allTxt = [...tr.querySelectorAll('input[type=text]:not(.s-search)')];
           const erl = allTxt.length > 1 ? allTxt[allTxt.length-1].value : '';
-          rows.push([nr, bez, eh, fmt(mg), erl]);
+          rows.push([nr, bez, eh, fmt(mg, eh), erl]);
         } else {
           const tds = tr.querySelectorAll('td');
+          const eh  = tds[2]?.textContent?.trim()||'';
           rows.push([
             tds[0]?.textContent?.trim()||'',
             tds[1]?.textContent?.trim()||'',
-            tds[2]?.textContent?.trim()||'',
-            fmt(mg),
+            eh,
+            fmt(mg, eh),
             tr.querySelector('input[type=text]')?.value||''
           ]);
         }
