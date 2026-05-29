@@ -1103,9 +1103,13 @@ function generatePDF() {
 
     // Objekt / Baumassnahme
     oflSecHdr('Objekt / Baumassnahme');
-    oflCbRow('Sparte:', [...document.querySelectorAll('#tab-ofl .cb-item')].map(li => ({
-      text: li.textContent.trim(), checked: !!li.querySelector('input')?.checked
-    })));
+    const sparteLbl = [...document.querySelectorAll('#tab-ofl .ofl-lbl')].find(l => l.textContent.trim() === 'Sparte:');
+    const sparteItems = sparteLbl
+      ? [...sparteLbl.closest('tr').querySelectorAll('.cb-item')].map(li => ({
+          text: li.textContent.trim(), checked: !!li.querySelector('input')?.checked
+        }))
+      : [];
+    oflCbRow('Sparte:', sparteItems);
     oflRow('Baumassnahme:', document.getElementById('ofl-baum')?.value);
     oflRow('Auftragsnummer(n):', document.getElementById('ofl-aufnr')?.value);
     oflRow2('Ort:', document.getElementById('ofl-ort')?.value, 'Strasse / Nr.:', document.getElementById('ofl-strasse')?.value);
