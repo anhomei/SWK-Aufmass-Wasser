@@ -1024,11 +1024,13 @@ function generatePDF() {
     }
 
     function oflDrawRow(label, drawValue, h) {
-      const lh = h || ROW;
+      // Font muss VOR splitTextToSize gesetzt sein, damit die Messung stimmt
+      doc.setFont('helvetica','bold'); doc.setFontSize(8);
+      const lblLines = doc.splitTextToSize(label, LBL-4);
+      const lh = h || Math.max(ROW, lblLines.length * 4.8 + 2.5);
       doc.setDrawColor(150,150,150);
       doc.setFillColor(240,243,248); doc.rect(M, y, LBL, lh, 'FD');
-      const lblLines = doc.splitTextToSize(label, LBL-4);
-      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(0,0,0);
+      doc.setTextColor(0,0,0);
       doc.text(lblLines, M+2, y+4.2);
       doc.setFillColor(255,255,255); doc.rect(M+LBL, y, CW-LBL, lh, 'D');
       if (drawValue) drawValue(M+LBL, y, CW-LBL, lh);
@@ -1062,9 +1064,9 @@ function generatePDF() {
           doc.setDrawColor(0,0,0); doc.setFillColor(255,255,255);
           doc.rect(cx, yy+1.8, 3.2, 3.2, 'FD');
           if (checked) { doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(0,0,0); doc.text('X', cx+0.6, yy+4.5); }
-          doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(0,0,0);
+          doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(0,0,0);
           doc.text(text, cx+4.5, yy+4.8);
-          cx += doc.getTextWidth(text)+11;
+          cx += doc.getTextWidth(text)+8;
         });
       });
     }
