@@ -245,12 +245,8 @@ body.pdf-gen .tab-content { border:none !important; padding:4px 0 !important; }
       <input type="text" id="g-baum" placeholder="z. B. NA-Erneuerung" oninput="syncAll()">
     </div>
     <div class="field-grp">
-      <label>Sparte</label>
-      <input type="text" id="g-sparte" placeholder="z. B. SWK-W" oninput="syncAll()">
-    </div>
-    <div class="field-grp">
-      <label>Interne Auftrags-Nr.</label>
-      <input type="text" id="g-intern" placeholder="z. B. 2026-0123" oninput="syncAll()">
+      <label>Sparte / Interne Nr.</label>
+      <input type="text" id="g-sparte" placeholder="z. B. SWK-W / 2026-0123" oninput="syncAll()">
     </div>
     <div class="field-grp">
       <label>Aufmaßblatt — Umfang</label>
@@ -280,7 +276,7 @@ body.pdf-gen .tab-content { border:none !important; padding:4px 0 !important; }
   <div class="print-header">
     <div class="print-header-title">
       <div><strong>Aufmaßblatt W T — Tiefbau &nbsp;|&nbsp; Roth GmbH Tiefbau Kaiserslautern</strong><br>
-      <span style="font-size:8px;color:#555;">Sparte: <span id="ph-wt-sparte"></span> &nbsp;|&nbsp; Interne Nr.: <span id="ph-wt-intern"></span></span></div>
+      <span style="font-size:8px;color:#555;"><span id="ph-wt-sparte"></span></span></div>
       <img src="" class="print-logo" style="height:28px;width:auto;" alt="Roth GmbH">
     </div>
     <div class="print-header-grid">
@@ -374,7 +370,7 @@ body.pdf-gen .tab-content { border:none !important; padding:4px 0 !important; }
   <div class="print-header">
     <div class="print-header-title">
       <div><strong>Aufmaßblatt W M — Montage &nbsp;|&nbsp; Roth GmbH Tiefbau Kaiserslautern</strong><br>
-      <span style="font-size:8px;color:#555;">Sparte: <span id="ph-wm-sparte"></span> &nbsp;|&nbsp; Interne Nr.: <span id="ph-wm-intern"></span></span></div>
+      <span style="font-size:8px;color:#555;"><span id="ph-wm-sparte"></span></span></div>
       <img src="" class="print-logo" style="height:28px;width:auto;" alt="Roth GmbH">
     </div>
     <div class="print-header-grid">
@@ -608,7 +604,6 @@ function syncAll() {
   const strasse = document.getElementById('g-strasse').value;
   const baum    = document.getElementById('g-baum').value;
   const sparte  = document.getElementById('g-sparte')?.value || '';
-  const intern  = document.getElementById('g-intern')?.value || '';
   const zeitraum = von && bis ? `${von} – ${bis}` : (von || bis || '');
 
   // Druckköpfe WT
@@ -619,7 +614,6 @@ function syncAll() {
   document.getElementById('ph-wt-strasse').textContent = strasse;
   document.getElementById('ph-wt-baum').textContent    = baum;
   document.getElementById('ph-wt-sparte').textContent  = sparte;
-  document.getElementById('ph-wt-intern').textContent  = intern;
   // Druckköpfe WM
   document.getElementById('ph-wm-aufnr').textContent   = aufnr;
   document.getElementById('ph-wm-zeitraum').textContent = zeitraum;
@@ -628,7 +622,6 @@ function syncAll() {
   document.getElementById('ph-wm-strasse').textContent = strasse;
   document.getElementById('ph-wm-baum').textContent    = baum;
   document.getElementById('ph-wm-sparte').textContent  = sparte;
-  document.getElementById('ph-wm-intern').textContent  = intern;
   // Druckköpfe OFL
   document.getElementById('ph-ofl-aufnr').textContent  = aufnr;
   document.getElementById('ph-ofl-fertig').textContent = fertig;
@@ -904,7 +897,6 @@ function generatePDF() {
       strasse: document.getElementById('g-strasse').value,
       baum:    document.getElementById('g-baum').value,
       sparte:  document.getElementById('g-sparte')?.value || '',
-      intern:  document.getElementById('g-intern')?.value || '',
     };
     G.zeitraum = [G.von, G.bis].filter(Boolean).join(' – ');
 
@@ -919,7 +911,7 @@ function generatePDF() {
       doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(255,255,255);
       doc.text(title + '  |  Roth GmbH Tiefbau Kaiserslautern', M+2, y+4.8);
       y += 9;
-      const sparteStr = [G.sparte, G.intern].filter(Boolean).join('  |  Intern: ') || '';
+      const sparteStr = G.sparte || '';
       const info = [
         ['AUFTRAGSNUMMER / -TEXT', G.aufnr,   'AUSFUEHRUNGSZEITRAUM', G.zeitraum],
         ['ORT',                    G.ort,      'STRASSE / NR.',        G.strasse],
