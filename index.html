@@ -958,12 +958,11 @@ function generatePDF() {
           const erl = allTxt.length > 1 ? allTxt[allTxt.length-1].value : '';
           rows.push([nr, bez, eh, fmt(mg, eh), erl]);
         } else {
-          const tds = tr.querySelectorAll('td');
-          const eh  = tds[2]?.textContent?.trim()||'';
+          const nr  = tr.querySelector('.td-nr')?.textContent?.trim()||'';
+          const bez = tr.querySelector('.td-bez')?.textContent?.trim()||'';
+          const eh  = tr.querySelector('.td-eh')?.textContent?.trim()||'';
           rows.push([
-            tds[0]?.textContent?.trim()||'',
-            tds[1]?.textContent?.trim()||'',
-            eh,
+            nr, bez, eh,
             fmt(mg, eh),
             tr.querySelector('input[type=text]')?.value||''
           ]);
